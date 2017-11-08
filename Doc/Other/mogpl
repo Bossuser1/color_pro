@@ -1,0 +1,36 @@
+On considère une grille de N ligne numerote 0 à N-1 et M colonnes numerotés de 0 M-1
+
+ligne 0:N-1
+colone 0:M-1
+
+N*M case doit etre coloriée en blanc ou noir.
+
+A chaque ligne li i=0,.....,N-1 est asscoiée une sequence d'entiers representant les longueurs des blocs de cases noirs de la lignes.
+
+
+De même a chaque colone cj j=0....M-1 est asscoié une sequence d'entiere representant la longueurs de cases noirs de la colonne.
+
+
+le but est de produire une solution (coloriage noir-blanc des cases) repondant aux contraintes.
+
+Plus generalement ,chaque ligne/colone se voit donc assiéer une sequence ( s1,s2,....sk) de nbres entiers positif
+
+le coloriage doit comporter sur cette ligne/colone un premier bloc 
+
+s1 cases noirs dans la ligne/colonne
+
+
+puis le s2 cases noirers
+.... il n'ya pas autres cases noirs 
+
+les blocs doivent etre separées d'au moins une case blanche.
+
+il peut y avoir des cases blanches avant lepremieres bloc , et/ou apres le dernier bloc
+
+============
+
+Gith :Bossuser1
+pass same
+
+Git:traoreb
+pass sam

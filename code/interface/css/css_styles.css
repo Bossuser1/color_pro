@@ -1,0 +1,431 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+	/* Explanation : https://github.com/twbs/bootstrap/pull/19098 */
+	font-family:
+	/* 1 */ -apple-system, BlinkMacSystemFont,
+	/* 2 */ "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+	/* 3 */ "Helvetica Neue", sans-serif;
+    /* font-family: "Lato",Arial,sans-serif; */
+    font-weight: 300;
+    webkit-tap-highlight-color: #222;
+    top:0;
+}
+
+h1, .h1, h2, .h2, h3, .h3 {
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+/* HR is used to underline various part */
+hr {
+    width: 50%;
+    border-width: 3px;
+    opacity: 0.08;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+hr.light {
+    border-color: #fff;
+    opacity: 1;
+}
+
+hr.primary {
+    border-color: #1f8dd6;
+    opacity: 1;
+}
+
+a {
+    color: #1f8dd6;
+}
+
+a:hover,
+a:focus {
+    color: #222;
+    outline: 0;
+}
+
+a.card {
+    color: #222;
+}
+
+a.card:hover, 
+a.card:focus {
+    color: #1f8dd6;
+    outline: 0;
+	text-decoration: none;
+}
+
+p {
+    margin-bottom: 20px;
+}
+
+.wide-space {
+    letter-spacing: 1.6px;
+}
+
+.icon-lg {
+    font-size: 50px;
+    line-height: 18px;
+}
+
+.bg-primary {
+    background-color: #1f8dd6;
+}
+
+.bg-alt {
+    background-color: #fff;
+}
+
+.text-faded {
+    color: rgba(245,245,245,0.7);
+}
+
+.text-dark {
+    color: #001A33;
+}
+
+.text-light {
+    color: #fff;
+}
+
+.text-light:hover,.text-light:focus {
+    color: #eee;
+    text-decoration:none;
+}
+
+.text-primary {
+    color: #1f8dd6;
+}
+
+.centered {
+    text-align: center;
+}
+
+section {
+    padding: 60px 0;
+}
+
+aside {
+    padding: 45px 0;
+}
+
+body > footer {
+    padding: 45px;
+    padding-top: 40px;
+    background-color: #e0e0e3;
+}
+
+.navbar-default {
+    border-color: rgba(35,35,35,.05);
+    background-color: #fff;
+}
+
+.navbar-brand {
+    color: #1f8dd6;
+    padding: 1px;
+	font-size: 1rem;
+	line-height: 30px;
+    float:none;
+}
+
+.navbar-brand:hover,
+.navbar-brand:focus {
+    color: #1f8dd6;
+}
+
+.navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover {
+    background-color: #001A33;
+}
+.navbar-default .navbar-toggle, .navbar-default .navbar-collapse {
+    border-color: transparent;
+}
+
+.navbar-default .nav > li>a,
+.navbar-default .nav>li>a:focus {
+    font-size: 14px;
+    color: #001A33;
+    text-transform: uppercase;
+}
+
+.navbar-default .nav>li>a:hover,
+.navbar-default .nav>li>a:focus:hover {
+    color: #1f8dd6;
+}
+
+.navbar-default .nav .nav-link.active,
+.navbar-default .nav .nav-link.active:focus {
+    color: #1f8dd6 !important;
+    background-color: transparent;
+}
+
+/* responsive nav */
+@media(max-width:48em) {
+    .navbar-default .navbar-nav>.nav-item {
+        float: none;
+        margin-left: .1rem;
+    }
+    .navbar-default .navbar-nav {
+        float:none !important;
+    }
+}
+
+@media(min-width:48em) {
+    .navbar-default {
+        border-color: transparent;
+		background-color: #000;
+		color: #bebebe;
+    }
+
+    .navbar-brand {
+		color:#3498db;
+        float: left;
+        padding-left: 9px;
+    }
+
+    .navbar-default .navbar-brand:hover,
+    .navbar-default .navbar-brand:focus {
+        color: #bebebe;
+    }
+    
+    .navbar-default .nav > li>a,
+    .navbar-default .nav>li>a:focus {
+        color: #bebebe;
+        padding-left: 5px;
+        letter-spacing: 1.1px;
+    }
+
+    .navbar-default .nav > li>a:hover,
+    .navbar-default .nav>li>a:focus:hover {
+        color: #fff;
+    }
+}
+
+header {
+	/* background: rgba(0, 0, 0, 0) url("../img/header_bg.jpg") no-repeat scroll center center / cover; */
+	background-color: #000;
+    background-image: url("../img/background-tile.png");
+    background-position: center top;
+    background-repeat: repeat-x;
+    background-size: contain;
+    min-height: 100%;
+    text-align: center;
+    width: 100%;
+}
+
+header .header-content {
+    position: relative;
+    width: 100%;
+    padding: 100px 15px;
+    text-align: center;
+    z-index: 2;
+}
+
+header .header-content .inner h1 {
+	color: #ffffff;
+    font-size: 70px;
+	text-transform: uppercase;
+    letter-spacing: 8px;
+    padding-bottom: 30px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+header .header-content .inner p {
+	color: #1f8dd6;
+    margin-bottom: 50px;
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    margin-left: 15px;
+}
+
+@media(min-width:34em) {
+    .icon-lg {
+        font-size: 80px;
+    }
+
+    header .header-content {
+        position: absolute;
+        top: 50%;
+        padding: 0 50px;
+        -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    header .header-content .inner {
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    header .header-content .inner h1 {
+        font-size: 70px;
+    }
+
+    header .header-content .inner p {
+        margin-right: auto;
+        margin-left: auto;
+        font-size: 30px;
+    }
+}
+
+.list-group-item, .card-footer {
+    background-color:transparent;
+}
+
+textarea {
+    resize: none;
+}
+
+.call-to-action h2 {
+    margin: 0 auto 20px;
+}
+
+.btn.btn-primary {
+    background-color: #1f8dd6;
+}
+
+.btn-xl {
+    padding: 15px 30px;
+    font-size: 20px;
+}
+
+::-moz-selection {
+    text-shadow: none;
+    color: #fff;
+    background: #222;
+}
+
+::selection {
+    text-shadow: none;
+    color: #fff;
+    background: #222;
+}
+
+img::selection {
+    color: #fff;
+    background: 0 0;
+}
+
+img::-moz-selection {
+    color: #fff;
+    background: 0 0;
+}
+
+.img-fluid:hover {
+	opacity: 0.5;
+}
+
+.layout-item {
+    border-top: 1px solid #eeeeee;
+    margin: 1.3em 0;
+    padding: 1.3em 0;
+}
+
+.next-tutorial {
+    float: right;
+    letter-spacing: normal;
+    position: relative;
+}
+
+/* bs-callout is used in tutorials to hightlight a particular point, it's a box with a color on the left */
+.bs-callout {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #eee;
+    border-image: none;
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 1px 1px 1px 5px;
+    margin: 20px 0;
+    padding: 20px;
+}
+
+.bs-callout-warning {
+    border-left-color: #fad232;
+}  
+
+.bs-callout-info {
+    border-left-color: #1f8dd6;
+} 
+
+.bs-callout-danger {
+    border-left-color: #dd514c;
+}
+
+.bs-callout-danger h4 {
+    color: #dd514c;
+}
+
+.bs-callout-warning h4 {
+    color: #fad232;
+}
+
+.bs-callout-info h4 {
+    color: #1f8dd6;
+}
+
+/* tutorialwrap is the DIV used in each tutorial for the title and subtitle*/
+#tutorialwrap {
+    background: #f7f7f9 none repeat scroll 0 0;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 40px;
+    margin-top: 0;
+    padding-top: 40px;
+    text-align: center;
+}
+
+#tutorialwrap h1 {
+    font-size: 3em;
+    font-weight: 300;
+}
+
+#tutorialwrap h3 {
+    color: grey;
+    font-weight: 300;
+}
+
+/* Carousel, remove shaddow on left and right, invert text color, center image... */
+.carousel-control.left, .carousel-control.right {
+    background-image: none;
+    color: #373a3c;
+}
+
+.carousel-indicators {
+    bottom: 0;
+}
+
+.carousel-indicators li {
+	border: 1px solid #373a3c;
+}
+
+.carousel-indicators .active {
+	background-color: #373a3c;
+}
+
+.carousel-caption {
+    position: relative;
+    left: auto;
+    right: auto;
+	color: #373a3c;
+	text-shadow: none;
+}
+
+.carousel-control .icon-prev::before, .carousel-control .icon-next::before {
+    font-size: 60px;
+}
+
+.facebook
+{
+    background-image: url('/imag/logo.png');
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+}

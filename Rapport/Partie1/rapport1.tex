@@ -1,0 +1,220 @@
+\documentclass[a4paper, titlepage, oneside, 12pt]{article}%      autres choix : book  report
+
+\usepackage[utf8]{inputenc}%           gestion des accents (source)
+
+\usepackage[T1]{fontenc}%              gestion des accents (PDF)
+
+\usepackage[francais]{babel}%          gestion du français
+
+\usepackage{textcomp}%                 caractères additionnels
+
+\usepackage{mathtools,  amssymb, amsthm}% packages de l'AMS + mathtools
+
+\usepackage{lmodern}%                  police de caractère
+
+\usepackage{geometry}%                 gestion des marges
+
+\usepackage{graphicx}%                 gestion des images
+
+\usepackage{xcolor}%                   gestion des couleurs
+
+\usepackage{array}%                    gestion améliorée des tableaux
+
+\usepackage{calc}%                     syntaxe naturelle pour les calculs
+
+\usepackage{titlesec}%                 pour les sections
+
+\usepackage{titletoc}%                 pour la table des matières
+
+\usepackage{fancyhdr}%                 pour les en-têtes
+
+\usepackage{titling}%                  pour le titre
+
+\usepackage[framemethod=TikZ]{mdframed}% print frames
+
+\usepackage{caption}%                  for captionof
+
+\usepackage{listings}
+
+\usepackage{enumitem}%                 pour les listes numérotées
+
+\usepackage{microtype}%                améliorations typographiques
+
+\usepackage{csvsimple}%                convertir un fichier .csv en tableau
+
+\usepackage{adjustbox}%                centrer les tableaux
+
+\usepackage{hyperref}%                 gestion des hyperliens
+
+\usepackage[french]{algorithm2e}
+\hypersetup{pdfstartview=XYZ}%         zoom par défaut
+
+%%%%%%%%%%%%%%%%%%%%%% CONFIGURATION %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mdfdefinestyle{MyFrame}{%
+    linecolor=black,
+    outerlinewidth=0pt,
+    roundcorner=10pt,
+    innertopmargin=\baselineskip,
+    innerbottommargin=\baselineskip,
+    innerrightmargin=20pt,
+    innerleftmargin=20pt,
+    backgroundcolor=black!10!white}
+
+\captionsetup[lstlisting]{labelformat=empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheorem{prop}{Proposition}
+
+\hypersetup{                    % parametrage des hyperliens
+    colorlinks=true,                % colorise les liens
+    breaklinks=true,                % permet les retours à la ligne pour les liens trop longs
+    urlcolor= red,                 % couleur des hyperliens
+    linkcolor= blue,                % couleur des liens internes aux documents (index, figures, tableaux, equations,...)
+    citecolor= green                % couleur des liens vers les references bibliographiques
+    }
+%%%%%%%%%%%%%%%%%%%%%% COMMANDES PL %%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\boldmin{\mathop{\mathbf{min}}}
+\newcommand\boldmax{\mathop{\mathbf{max}}}
+
+
+
+% I don't know how it works but it does !
+\def\foo#1#2{%
+\newenvironment{variables}
+{\paragraph{Variables :}
+#1{2}}
+{#2}}
+\expandafter\foo
+  \csname alignat*\expandafter\endcsname
+  \csname endalignat*\endcsname
+
+
+% \newenvironment{variables}
+% {  \paragraph{Variables :}
+  
+%   \alignat{2} }
+% {  \endalignat }
+
+\newenvironment{fonctionobj}
+{ \paragraph{Fonction objectif :}
+
+
+  }
+{  }
+
+\def\cons#1#2{%
+\newenvironment{contraintes}
+{\paragraph{Contraintes :}
+#1{2}}
+{#2}}
+\expandafter\cons
+  \csname alignat*\expandafter\endcsname
+  \csname endalignat*\endcsname
+
+
+\newcommand{\variable}[4]{\underbrace{#1}_{\mathclap{\text{#4}}} \in #2 &\ #3 \\}
+\newcommand{\fobj}[2]{\begin{alignat*}{2} #1 &\qquad \text{\footnotesize (#2)} \end{alignat*}}
+\newcommand{\constraint}[3]{#1 &,\ & #2 & 
+\if\relax\detokenize{#3}\relax
+\\
+\else
+\qquad \text{\footnotesize \textcolor{blue}{\textit{#3}}} \\ 
+\fi}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\title{Rapport pour le projet de MOGPL}
+\date{\today}
+\author{TRAORE BASSIRO OUREMI}
+
+ % Modèle pour écrire un programme linéaire
+ % \begin{alignat*}{2}
+ %    \text{minimize }   & \sum_{i=1}^m c_i x_i + \sum_{j=1}^n d_j t_j\  \\
+ %    \text{subject to } & \sum_{i=1}^m a_{ij} + e_j t_j \geq g_j &,\ & 1\leq j\leq n\\
+ %                       & f_i x_i + \sum_{j=1}^n b_{ij}t_j \geq h_i\ &,\ & 1\leq i\leq m\\
+ %                       & x\geq 0,\ t_j\geq 0\ &,\ & 1\leq j\leq n,\ 1\leq i\leq m
+ %  \end{alignat*}
+
+
+\begin{document}
+
+\maketitle
+{
+  \hypersetup{linkcolor=black}
+  \tableofcontents
+}
+
+\newpage
+
+\section{modélisation PNLE}
+\subsection{Question 10}
+La définition du programme linéaire $\mathcal{P}_0$ est donnée dans l'encadré ci-dessous :
+\begin{mdframed}[style=MyFrame]
+
+%$P^{w_i}$
+\begin{contraintes}
+    \constraint{\sum_{k=j}^{j+st-1} z^t_{i,k} \leq st}{ 0\leq j\leq M-1,0\leq i\leq N-1,1\leq t\leq nbsequence de la colonne j}{$1$ pour les colonnes}
+     \constraint{\sum_{k=i}^{i+st-1} y^t_{k,j} \leq st}{ 0\leq j\leq M-1,0\leq i\leq N-1,1\leq t\leq nbsequence de la ligne i}{$1$ pour les lignes}
+    %\constraint{\sum_{j=1}^n x_{i,j} =1}{ 1\leq i\leq n}{$1$ bien par agent}
+    %\constraint{z_i(x) +d_{k_i} -(d_{k_{seuil}^+}-d_{k_{seuil}^-})\geq 0}{ 1\leq k,i\leq n}{}
+\end{contraintes}
+\end{mdframed}
+\captionof{lstlisting}{Programme linéaire $\mathcal{L}_k$}
+
+\subsection{Question 11a}
+Formulez une contrainte qui exprime le décalage nécessaire entre le début des blocs s t et s t+1
+de la ligne li:
+\begin{mdframed}[style=MyFrame]
+
+%$P^{w_i}$
+\begin{contraintes}
+    \constraint{z^t_{i,j}+z^{t+1}_{i+st,j} \leq 1}{ 0\leq j\leq M-1,0\leq i\leq N-1,1\leq t\leq nbsequence de la colonne j}{$1$ pour les colonnes}
+    \constraint{y^t_{i,j}+y^{t+1}_{i,j+st} \leq 1}{ 0\leq j\leq M-1,0\leq i\leq N-1,1\leq t\leq nbsequence de la ligne i}{$1$ pour les lignes}
+    % \constraint{\sum_{k=i}^{i+st-1} y^t_{k,j} \leq st}{ 0\leq j\leq M-1,0\leq i\leq N-1,1\leq t\leq nbsequence de la ligne i}{$1$ pour les lignes}
+    %\constraint{\sum_{j=1}^n x_{i,j} =1}{ 1\leq i\leq n}{$1$ bien par agent}
+    %\constraint{z_i(x) +d_{k_i} -(d_{k_{seuil}^+}-d_{k_{seuil}^-})\geq 0}{ 1\leq k,i\leq n}{}
+\end{contraintes}
+
+\end{mdframed}
+
+\subsection{Question 11b}
+contrainte suplementaires
+\begin{mdframed}[style=MyFrame]
+
+%$P^{w_i}$
+\begin{contraintes}
+    \constraint{\sum_{i=0}^{M-1} \sum_{t=1} z^t_{i,j} \leq \sum_{t=1} st}{ 0\leq j\leq N-1}{$1$ pour les colonnes}
+    \constraint{\sum_{j=0}^{N-1} \sum_{t=1} y^t_{i,j} \leq \sum_{t=1} st}{ 0\leq i\leq M-1}{$1$ pour les lignes}
+    %\constraint{\sum_{k=j}^{j+st-1} z^t_{i,k} \leq st}{$1$ pour les colonnes}
+    %\constraint{y^t_{i,j}+y^{t+1}_{i,j+st} \leq 1}{ 0\leq j\leq M-1,0\leq i\leq N-1,1\leq t\leq nbsequence de la ligne i}{$1$ pour les lignes}
+    % \constraint{\sum_{k=i}^{i+st-1} y^t_{k,j} \leq st}{ 0\leq j\leq M-1,0\leq i\leq N-1,1\leq t\leq nbsequence de la ligne i}{$1$ pour les lignes}
+    %\constraint{\sum_{j=1}^n x_{i,j} =1}{ 1\leq i\leq n}{$1$ bien par agent}
+    %\constraint{z_i(x) +d_{k_i} -(d_{k_{seuil}^+}-d_{k_{seuil}^-})\geq 0}{ 1\leq k,i\leq n}{}
+\end{contraintes}
+
+
+\end{mdframed}
+%\captionof{lstlisting}{Programme linéaire $\mathcal{L}_k$}
+
+
+\subsection{Question 15}
+Résolvez les instances 1.txt à 16.txt avec un timeout de 2 minutes. Donnez les temps de
+calcul dans un tableau.
+\begin{table}
+\centerline{
+\csvautotabular {data/question15/question15a.csv}
+}
+\caption{Pour la résolution du PLNE des instances 1 à 16 }
+\label{question15}
+\end{table}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

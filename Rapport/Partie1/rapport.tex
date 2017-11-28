@@ -1,0 +1,670 @@
+\documentclass[a4paper, titlepage, oneside, 12pt]{article}%      autres choix : book  report
+
+\usepackage[utf8]{inputenc}%           gestion des accents (source)
+
+\usepackage[T1]{fontenc}%              gestion des accents (PDF)
+
+\usepackage[francais]{babel}%          gestion du français
+
+\usepackage{textcomp}%                 caractères additionnels
+
+\usepackage{mathtools,  amssymb, amsthm}% packages de l'AMS + mathtools
+
+\usepackage{lmodern}%                  police de caractère
+
+\usepackage{geometry}%                 gestion des marges
+
+\usepackage{graphicx}%                 gestion des images
+
+\usepackage{xcolor}%                   gestion des couleurs
+
+\usepackage{array}%                    gestion améliorée des tableaux
+
+\usepackage{calc}%                     syntaxe naturelle pour les calculs
+
+\usepackage{titlesec}%                 pour les sections
+
+\usepackage{titletoc}%                 pour la table des matières
+
+\usepackage{fancyhdr}%                 pour les en-têtes
+
+\usepackage{titling}%                  pour le titre
+
+\usepackage[framemethod=TikZ]{mdframed}% print frames
+
+\usepackage{caption}%                  for captionof
+
+\usepackage{listings}
+
+\usepackage{enumitem}%                 pour les listes numérotées
+
+\usepackage{microtype}%                améliorations typographiques
+
+\usepackage{csvsimple}%                convertir un fichier .csv en tableau
+
+\usepackage{adjustbox}%                centrer les tableaux
+
+\usepackage{hyperref}%                 gestion des hyperliens
+
+\usepackage[french]{algorithm2e}
+\hypersetup{pdfstartview=XYZ}%         zoom par défaut
+
+%%%%%%%%%%%%%%%%%%%%%% CONFIGURATION %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mdfdefinestyle{MyFrame}{%
+    linecolor=black,
+    outerlinewidth=0pt,
+    roundcorner=10pt,
+    innertopmargin=\baselineskip,
+    innerbottommargin=\baselineskip,
+    innerrightmargin=20pt,
+    innerleftmargin=20pt,
+    backgroundcolor=black!10!white}
+
+\captionsetup[lstlisting]{labelformat=empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheorem{prop}{Proposition}
+
+\hypersetup{                    % parametrage des hyperliens
+    colorlinks=true,                % colorise les liens
+    breaklinks=true,                % permet les retours à la ligne pour les liens trop longs
+    urlcolor= red,                 % couleur des hyperliens
+    linkcolor= blue,                % couleur des liens internes aux documents (index, figures, tableaux, equations,...)
+    citecolor= green                % couleur des liens vers les references bibliographiques
+    }
+%%%%%%%%%%%%%%%%%%%%%% COMMANDES PL %%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\boldmin{\mathop{\mathbf{min}}}
+\newcommand\boldmax{\mathop{\mathbf{max}}}
+
+
+
+% I don't know how it works but it does !
+\def\foo#1#2{%
+\newenvironment{variables}
+{\paragraph{Variables :}
+#1{2}}
+{#2}}
+\expandafter\foo
+  \csname alignat*\expandafter\endcsname
+  \csname endalignat*\endcsname
+
+
+% \newenvironment{variables}
+% {  \paragraph{Variables :}
+  
+%   \alignat{2} }
+% {  \endalignat }
+
+\newenvironment{fonctionobj}
+{ \paragraph{Fonction objectif :}
+
+
+  }
+{  }
+
+\def\cons#1#2{%
+\newenvironment{contraintes}
+{\paragraph{Contraintes :}
+#1{2}}
+{#2}}
+\expandafter\cons
+  \csname alignat*\expandafter\endcsname
+  \csname endalignat*\endcsname
+
+
+\newcommand{\variable}[4]{\underbrace{#1}_{\mathclap{\text{#4}}} \in #2 &\ #3 \\}
+\newcommand{\fobj}[2]{\begin{alignat*}{2} #1 &\qquad \text{\footnotesize (#2)} \end{alignat*}}
+\newcommand{\constraint}[3]{#1 &,\ & #2 & 
+\if\relax\detokenize{#3}\relax
+\\
+\else
+\qquad \text{\footnotesize \textcolor{blue}{\textit{#3}}} \\ 
+\fi}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\title{Rapport pour le projet de MOGPL}
+\date{\today}
+\author{Pierre Mahé \& François Thiré}
+
+ % Modèle pour écrire un programme linéaire
+ % \begin{alignat*}{2}
+ %    \text{minimize }   & \sum_{i=1}^m c_i x_i + \sum_{j=1}^n d_j t_j\  \\
+ %    \text{subject to } & \sum_{i=1}^m a_{ij} + e_j t_j \geq g_j &,\ & 1\leq j\leq n\\
+ %                       & f_i x_i + \sum_{j=1}^n b_{ij}t_j \geq h_i\ &,\ & 1\leq i\leq m\\
+ %                       & x\geq 0,\ t_j\geq 0\ &,\ & 1\leq j\leq n,\ 1\leq i\leq m
+ %  \end{alignat*}
+
+
+\begin{document}
+
+\maketitle
+{
+  \hypersetup{linkcolor=black}
+  \tableofcontents
+}
+
+\newpage
+
+\section{Première modélisation du problème}
+\subsection{Question 1}
+La définition du programme linéaire $\mathcal{P}_0$ est donnée dans l'encadré ci-dessous :
+\begin{mdframed}[style=MyFrame]
+
+
+\begin{variables}
+\variable{x_{i,j}}{\mathbb{B}}{1 \leq i,j \leq n}{Vaut $1$ si l'agent $a_i$ reçoit le bien $b_j$}
+\end{variables}
+
+\begin{fonctionobj}
+
+\fobj{\boldmax \ \frac{1}{n}\ \sum_{\substack{1\leq i,j \leq n}} u_{i,j}x_{i,j}}
+{avec $u_{i,j}$ les coefficients d'utilité du bien $i$ pour l'agent $j$}
+\end{fonctionobj}
+
+\begin{contraintes}
+   \constraint{\sum_{i=1}^n x_{i,j} =1}{ 1\leq j\leq n}{$1$ agent par bien}
+   \constraint{\sum_{j=1}^n x_{i,j} =1}{ 1\leq i\leq n}{$1$ bien par agent}
+\end{contraintes}
+
+\end{mdframed}
+\captionof{lstlisting}{Programme linéaire $\mathcal{P}_0$}
+
+\subsection{Question 2}
+Vous trouverez le code \textit{Python} du modèle $\mathcal{P}_0$  dans le répertoire \textit{Python/modelisation\_P0}. 
+L'implémentation du modèle et la génération des tests se fait dans le fichier \textbf{P0.py}. Le programme peut se lancer soit en utilisant la  commande \textit{Python2.7} s'il est installé ou bien en utilisant \textit{gurobi.sh}. Afin de connaître les différentes options disponibles, il est possible d'utiliser l'option \textbf{-h}.
+
+En particulier pour lancer le programme avec comme taille $n=100$ et $M=1000$ on utilisera la commande suivante :
+\begin{lstlisting}[language=bash]
+gurobi.sh P0.py -n 100 -M 1000
+\end{lstlisting}
+
+Si vous choisissez d'utiliser les options pour enregistrer le modèle et écrire la solution dans un fichier, alors le programme va créer respectivement deux sous-dossiers\footnote{à partir du dossier courant} \textit{modele} et \textit{solutions} qui contiendra ces fichiers. Ces remarques s'appliquent aussi bien pour les autres implémentations demandées par le projet\footnote{A part les modélisations utilisant pygraph où il faut utiliser la commande \textit{python2.7}}.
+
+\subsection{Question 3}
+
+Nous avons automatisé la création des tableaux par un script \textit{bash} que vous trouverez dans le répertoire \textit{Python/stats/question\_3}. Ce programme va générer des fichiers \textit{csv} qui pourront ensuite être importés dans un fichier \LaTeX en utilisant le package \textit{csvsimple}. Voici donc les résultats trouvés :
+
+%\begin{adjustbox}{center}
+
+\begin{table}[h]
+\centerline{
+\csvautotabular{csv/question_3/question_3_10.csv}
+}
+\caption{Résultats lorsque $M=10$}
+\centerline{
+\csvautotabular{csv/question_3/question_3_100.csv}
+}
+\caption{Résultats lorsque $M=100$}
+\centerline{
+\csvautotabular{csv/question_3/question_3_1000.csv}
+}
+\caption{Résultats lorsque $M=1000$}
+
+\end{table}
+
+A noter que les temps indiqués sont les temps indiqués par gurobi.
+%\end{adjustbox}
+\section{Approche égalitariste}
+\subsection{Question 4}
+
+Avant de parler de la construction du graphe, nous mentionnons que cette question nous a posé quelques problèmes. En effet, le sujet ne spécifiait pas une version spécifique de Python a utiliser. Le projet a donc d'abord été implémenté en utilisant la version \textbf{3.4} de Python. Seulement, il se trouve que \textit{gurobi} n'est pas compatible avec cette version. De plus, la librairie \textbf{pygraph} posait problème avec python \textbf{3.4} si nous voulions utiliser \textit{gurobi}. Une première solution a donc été d'utiliser la librairie \textit{graph\_tools}. L'implémentation se trouve dans \textit{Python/modelisation\_graph/graph\_tools.py}. Cependant cette implémentation souffre de deux problèmes :
+\begin{itemize}
+\item Les capacités utilisent directement les coefficients~;
+\item L'algorithme n'est pas au point, en particulier il n'utilise pas une recherche dichotomique~;
+\end{itemize}
+
+L'implémentation qui nous intéresse se situe à l'adresse \textit{Python/modelisation\_graph/approche\_egalitariste.py}. La suite se décompose en deux parties. Dans une première partie on explicite la construction du graphe associé au problème ainsi que le dictionnaire de capacité associé au graphe. Et dans une seconde partie, nous donnons explicitement l'algorithme qui permet de résoudre le problème souhaité.
+
+\subsubsection{Description du graphe : } 
+
+Soit $n$ le nombre d'agents ainsi que le nombre de biens à répartir. Soit $u_{i,j}$ l'utilité du bien $j$ pour l'agent $i$. 
+On fait l'hypothèse que les coefficients de la matrice $u_{i,j}$ soient distincts\footnote{L'hypothèse n'est pas très forte car il suffit sinon de tirer au hasard un $\varepsilon>0$ pour différencier les coefficients égaux}. 
+On construit le graphe orienté suivant :
+$G=(V,E)$ où 
+\begin{itemize}
+\item $V=\{s,a_0,a_1,\dots, u_{n-1}, o_0,o_1,\dots, o_{n-1},t\}$
+\item $\forall i,j \in \{1,\dots, n\} $
+  \begin{itemize}
+  \item $(a_i,o_j)\in E $
+  \item $(s,a_i)\in E$
+  \item $(o_j,t) \in E$
+  \end{itemize}
+\end{itemize}  
+
+Il reste à décrire les capacités sur chaque arc. 
+\begin{alignat*}{4}
+\forall i,j &\in \{1, \dots, n\},\ c(a_i;o_j)&=&1  \mbox{ si } u_{i,j}-\lambda>0\\
+\forall i,j &\in \{1, \dots, n\},\ c(a_i;o_j)&=&0  \mbox{ sinon}\\
+\forall i &\in \{1, \dots, n\},\ c(s;a_i)&=&1\\
+\forall j &\in \{1, \dots, n\},\ c(o_j;t)&=&1\\
+\end{alignat*}
+
+\subsubsection{Justification de la construction du graphe}
+
+En construisant le graphe de cette façon, on remarque qu'un flot maximal ne correspond pas forcément à un problème d'affectation. En effet, rien ne garantit que le flot sera composé qu'avec des capacités entières\footnote{En pratique cela n'arrive jamais si on utilise l'algorithme d'Edmonds-Karp}. Cependant on a la propriété suivante\footnote{Nous avons appris après coup qu'il existait le théorème des valeurs des entières qui englobait cette proposition.}:
+
+\begin{prop}
+Le graphe $G=(V,E)$ construit précédemment à un flot maximal si et seulement s'il existe un flot maximal à coefficient entier, i.e. le coefficient de chaque arc est soit $0$ soit $1$. 
+\label{prop1}
+\end{prop}
+
+\begin{proof}
+Le sens réciproque est évident. Il suffit de montrer le sens direct. Par la suite on fait l'hypothèse que chaque agent a reçu au moins un objet et réciproquement. Par maximalité, tous les $c(o_j,t)$ et les $c(s,a_i)$ sont à $1$. Le seul cas intéressant se situe quand un objet est distribué entre plusieurs agents. Soit $\mathcal{F}$ un float maximum. Soit $o$ un tel objet et $a_k$ les agents assignés à $o$. Alors par maximalité du flot on a $\sum_{\substack{k\in K}} c_{\mathcal{F}}(a_k,o)=1$. La construction consiste à choisir un agent $k$ parmi les $a_k$ et lui assigner cet objet en mettant sa capacité dans ce nouveau flot à $1$. Par construction du graphe, on peut répartir les capacités des arc $(a_{-k}; o)$ sur les autres objets assignés à l'agent $k$ (on comble les trous). On peut itérer ce processus jusqu'à ce que toutes les arêtes soient des coefficients entiers.
+\end{proof}
+
+Cette construction ne garantit en rien la maximalité du flot vis à vis des utilités des agents. C'est l'algorithme décrit dans la partie suivante qui va s'en assurer.
+
+\subsubsection{Description de l'algorithme : }
+\begin{algorithm}
+\DontPrintSemicolon % Some LaTeX compilers require you to use \dontprintsemicolon instead
+\KwIn{$u_{i,j}$, la matrice des utilités}
+\KwOut{$z^*=\boldmax \boldmin z_i(x)$}
+$\lambda \gets 0$\;
+$b^- \gets \lambda$\;
+$b^+ \gets \boldmax \{u_{i,j} | i,j \in \{1,...n,\}\}$\;
+$G \gets G(V,E)$\;
+\While{$\lambda \neq z^*$} {
+  $C\gets get\_capacites(G,\lambda)$\;
+  $flot \gets flot(G,C)$\;
+  \uIf{$flot$ est valide} {
+    $b^- \gets \lambda $\;
+  }
+  \Else{
+    $b^+ \gets \lambda$\;
+  }
+  $\lambda \gets \frac{b^- + b^+}{2}$\;
+}
+
+\Return{$\lambda$}\;
+\caption{Trouver le lambda maximum qui minimise l'utilité de l'agent le moins satisfait}
+\label{algo:max}
+\end{algorithm}
+    
+
+On ne prouve pas la correction de l'algorithme formellement. Par construction du graphe et des capacités, on a $\forall i \in \{1,\dots, n\},\ z_i(x)>\lambda$. Donc par la proposition \ref{prop1}, si l'algorithme de flot ne trouve pas de solution, alors c'est que le $\lambda$ choisi est trop grand. Sinon, alors on peut le faire grandir. Afin d'éviter d'itérer sur toutes les arêtes du graphe (dans le pire des cas), nous avons utilisé une recherche dichotomique.
+
+A noter que dans l'implémentation, nous avons implémenté le test d'égalité du \textbf{while} avec un compteur. Comme la recherche dichotomique met un temps logarithmique par rapport aux données, on a choisi le nombre d'itérations de telle sorte qu'il devrait être proportionnel à $2\log_2 size$\footnote{$size^2$ étant à peu prêt le nombre d'arêtes du graphe}. Après quelques essais, nous avons mis comme coefficient de proportionnalité $2$.
+
+\subsection{Question 5}
+On formule le programme linéaire suivant :
+
+\begin{mdframed}[style=MyFrame]
+
+
+\begin{variables}
+\variable{x_{i,j}}{\mathbb{B}}{1 \leq i,j \leq n}{Vaut $1$ si l'agent $a_i$ reçoit le bien $b_j$}
+\variable{z_{min}}{\mathbb{R}^+}{}{Satisfaction minimum d'un agent parmi tous les agents}
+\end{variables}
+
+\begin{fonctionobj}
+\fobj{\boldmax z_{min}} {}
+\end{fonctionobj}
+
+\begin{contraintes}
+    \constraint{\sum_{i=1}^n x_{i,j} =1}{ 1\leq j\leq n}{$1$ agent par bien}
+    \constraint{\sum_{j=1}^n x_{i,j} =1}{ 1\leq i\leq n}{$1$ bien par agent}
+    \constraint{ \sum_{\substack{1\leq i,j \leq n}} u_{i,j}x_{i,j} -z_{min} \geq 0}{1\leq i \leq n}{$z_{min}$ doit être plus petit que la satisfaction de l'agent $i$}
+\end{contraintes}
+
+\end{mdframed}
+\captionof{lstlisting}{Programme linéaire $\mathcal{P}_1$}
+
+\subsection{Question 6}
+
+Vous trouverez les résultats dans le tableau \ref{question6}
+\begin{table}
+%\begin{minipage}[c]{\textwidth}
+\centerline{
+\csvautotabular{csv/question_6/question_6_100.csv}
+}
+\caption{Temps moyens\protect\footnotemark entre les deux implémentations lorsque $M=100$}
+\label{question6}
+%\end{minipage}
+\end{table}
+\footnotetext{temps fournis par la commande time. Afin d'avoir une comparaison plus égalitaire.}
+
+
+On remarque dans ces résultats que l'algorithme utilisant les flots est plus lent. Pour autant, on ne peut pas dire que cette dernière méthode est plus lente. En effet, le modèle du programme linéaire de $\mathcal{P}_1$ est implémenté avec \textit{gurobi} qui utilise le C/C++ qui est  beaucoup plus rapide que le Python. Afin d'avoir des mesures un peu plus comparable, il faudrait implémenter l'algorithme de graphe en C/C++ efficacement ! 
+
+Cependant, les résultats peuvent laisser penser que l'approche par programmation linéaire est plus rapide en pratique. Ceci n'est pas très étonnant. Gurobi est un outil payant et maintenu par quelques dizaines de personnes. L'algorithme du simplexe profite donc de nombreuses améliorations. A l'inverse, la librairie pygraph est en python, et son but premier n'est pas la performance pure, elle n'est donc certainement pas optimisée.
+
+\subsection{Question 7}
+D'après les tableaux \ref{question7}, on peut observer que maximiser la satisfaction de l'agent le moins satisfait entraîne une répartition plus équitable des produits que lorsque l'on maximise la moyenne. A contrario, la moyenne des satisfactions par le programme $\mathcal{P}_1$ à tendance à être plus faible que la moyenne des satisfactions du programme $\mathcal{P}_0$.
+
+
+\begin{table}
+\centerline{
+\csvautotabular {csv/question_7/question_7_5.csv}
+}
+\caption{comparatif du modèle max et maxmin pour n=5  }
+\centerline{
+\csvautotabular {csv/question_7/question_7_10.csv}
+}
+\caption{comparatif du modèle max et maxmin pour n=10 }
+\label{question7}
+\end{table}
+
+
+\subsection{Question 8}
+
+\subsubsection{Modélisation de $\mathcal{P}_2$}
+Nous proposons la modélisation suivante pour $\mathcal{P}_2$ :
+\begin{mdframed}[style=MyFrame]
+
+
+\begin{variables}
+\variable{x_{i,j}}{\mathbb{B}}{1 \leq i,j \leq n}{Vaut $1$ si l'agent $a_i$ reçoit le bien $b_j$}
+\variable{z_{min}}{\mathbb{R}^+}{}{Satisfaction minimum d'un agent parmi tous les agents}
+\end{variables}
+
+\begin{fonctionobj}
+\fobj{\boldmax z_{min}+ \sum_{\substack{1\leq i,j \leq n}} \varepsilon u_{i,j}x_{i,j} } {}
+\end{fonctionobj}
+
+\begin{contraintes}
+    \constraint{\sum_{i=1}^n x_{i,j} =1}{ 1\leq j\leq n}{$1$ agent par bien}
+    \constraint{\sum_{j=1}^n x_{i,j} =1}{ 1\leq i\leq n}{$1$ bien par agent}
+    \constraint{ \sum_{\substack{1\leq i,j \leq n}} u_{i,j}x_{i,j} -z_{min} \geq 0}{1\leq i \leq n}{$z_{min}$ doit être plus petit que la satisfaction de l'agent $i$}
+\end{contraintes}
+
+\end{mdframed}
+\captionof{lstlisting}{Programme linéaire $\mathcal{P}_2$}
+
+\subsubsection{Comparaison de $\mathcal{P}_1$ avec $\mathcal{P}_2$}
+
+Afin de comparer les programmes $\mathcal{P}_1$ et $\mathcal{P}_2$, on se propose de modéliser le problème suivant :
+\begin{quote}
+L'association ASCII est une association de récupération de matériel informatique. Elle vient de réparer deux ordinateurs. Le premier ordinateur est un Macbook pro de 2010 et l'autre ordinateur est un PC sorti en 2009 avec une configuration moyenne sous Debain. Deux personnes se sont prononcés pour récupérer ces ordinateurs :
+\begin{itemize}
+\item Mr Michu souhaite un ordinateur pour faire de la bureautique. Il n'a pas de préférence personnel.
+\item Mr Suckerberg souhaite un ordinateur afin de l'aider dans le développement de sa nouvelle idée pour conquérir le monde. Bien sûr, il a une préférence pour l'ordinateur sous Debian.
+\end{itemize}
+
+La tâche de l'association ASCII est de distribuer les ordinateurs afin de satisfaire au maximum les besoin de Mr. Michu et de Mr. Suckerberg. L'association a donc défini une valeur qui correspond à l'utilité d'un des ordinateurs pour chacun des clients.
+
+L'association a définit que l'utilité de Mr Michu pour les des deux ordinateurs est $2$ puisque ce dernier n'a pas de préférence.
+Par contre, pour Mr Suckerberg, l'association à définit que l'utilité pour lui d'avoir le Macbook pro serait de $3$ et de $10^6$ s'il avait l'ordinateur sous Debian. 
+\end{quote}
+
+On peut évidemment modéliser ce problème comme un problème d'affectation. On obtient donc $4$ variables à savoir :
+\begin{itemize}
+\item $x_{Michu, Mac}$~;
+\item $x_{Michu, PC}$~;
+\item $x_{Suckerberg, Mac}$~;
+\item $x_{Suckerberg, Mac}$~;
+\end{itemize}
+
+Leurs coefficients dans la fonction objectif sont donnés directement dans le problème. Par le programme $\mathcal{P}_1$, il y a deux solutions possibles : 
+\begin{enumerate}
+\item $(x_{Michu, Mac},x_{Michu, PC},x_{Suckerberg, Mac},x_{Suckerberg, PC})$=(1,0,0,1)~;
+\item $(x_{Michu, Mac},x_{Michu, PC},x_{Suckerberg, Mac},x_{Suckerberg, PC})$=(0,1,1,0)~;
+\end{enumerate}
+
+En effet, dans la deux cas, la satisfaction associée à Mr Michu est de $2$ et la satisfaction de Mr Suckerberg est plus  grande.
+
+A l'inverse, par le programme $\mathcal{P}_2$, il y a qu'une solution possible :
+\begin{itemize}
+\item $(x_{Michu, Mac},x_{Michu, PC},x_{Suckerberg, Mac},x_{Suckerberg, PC})$=(1,0,0,1)~;
+\end{itemize}
+
+En effet, la satisfaction de Mr Suckerberg est plus grande dans la solution $1$ que dans la solution $2$. Cela entraîne donc que la fonction objectif est plus grande dans la solution $1$ que dans la solution $2$ car la satisfaction de Mr Michu n'a pas changé.
+
+On vient donc de trouver deux solutions différentes telles qu'avec le programme $\mathcal{P}_1$ la satisfaction de Mr Suckerberg soit strictement plus petite que dans la solution du programme $\mathcal{P}_2$ tandis que celle de Mr Michu n'a pas changé.
+
+Les remarques qu'on peut en tirer c'est que maximiser seulement la satisfaction de l'agent le moins satisfait n'est pas suffisant. En effet, comme on le voit dans l'exemple précédent, il peut y avoir plusieurs solutions et alors on ne sait pas laquelle sera donnée par le simplexe. Afin de pallier ce problème, il faut dire au simplexe qu'il faut tout de même maximiser la satisfaction des agents sans pour autant outrepasser l'objectif premier de maximiser la satisfaction de l'agent le moins satisfait. Pour cela, on rajoute un facteur $\varepsilon$ qui permet de différencier les différentes solutions possibles trouvées par le programme $\mathcal{P}_1$.
+
+
+
+\section{Approche égalitariste en regrets}
+
+\subsection{Question 9}
+
+\subsubsection{Modélisation de $\mathcal{P}_3$}
+\begin{mdframed}[style=MyFrame]
+
+
+\begin{variables}
+\variable{x_{i,j}}{\mathbb{B}}{1 \leq i,j \leq n}{Vaut $1$ si l'agent $a_i$ reçoit le bien $b_j$}
+\variable{r_{max}}{\mathbb{R}^+}{}{Satisfaction minimum d'un agent parmi tous les agents}
+\end{variables}
+
+\begin{fonctionobj}
+\fobj{\boldmax r_{max}} {}
+\end{fonctionobj}
+
+\begin{contraintes}
+    \constraint{\sum_{i=1}^n x_{i,j} =1}{ 1\leq j\leq n}{$1$ agent par bien}
+    \constraint{\sum_{j=1}^n x_{i,j} =1}{ 1\leq i\leq n}{$1$ bien par agent}
+    \constraint{ \sum_{\substack{1\leq i,j \leq n}} u_{i,j}x_{i,j} +r_{max} \geq z_i*}{1\leq i \leq n}{$r_{max}$ doit être plus grand que le regret de l'agent $i$}
+\end{contraintes}
+\end{mdframed}
+\captionof{lstlisting}{Programme linéaire $\mathcal{P}_3$}
+
+\subsection{Question 10}
+L'algorithme utilisant les flots afin de procéder à l'approche égalitariste et l'approche par regret sont vraiment proches. En particulier, la construction du graphe sera équivalente. Avec deux changements notoires :
+\begin{itemize}
+\item les capacités (décrites ci-dessous)~;
+\item la recherche dichotomique se fait dans l'autre sens.
+\end{itemize}
+
+Les deux algorithmes étant similaires, nous n'explicitons pas le nouvel algorithme. Nous donnons juste le calcul des capacités : 
+\begin{align*}
+\forall i,j \in \{1, \dots, n\} c(a_i;o_j)&=1 \mbox{ si } z_i(x)^*-u_{i,j}<\lambda\\
+\forall i,j \in \{1, \dots, n\} c(a_i;o_j)&=0 \mbox{ sinon}\\
+\forall i \in \{1, \dots, n\},\ c(s;a_i)&=1\\
+\forall j \in \{1, \dots, n\},\ c(o_j;t)&=1\\
+\end{align*}
+
+\subsubsection{Description de l'algorithme :}
+
+
+\subsection{Question 11}
+Vous trouverez les résultats dans le tableau \ref{question11}
+\begin{table}[h]
+\centerline{
+\csvautotabular{csv/question_11/question_11_100.csv}
+}
+\caption{Comparaison des temps moyens (en seconde) entre les deux implémentations lorsque $M=100$}
+\label{question11}
+
+\end{table}
+
+Comme à la question $6$, on s'aperçoit que l'implémentation par graphe semble plus lente que celle utilisant l'algorithme du simplexe. Ici aussi, les remarques sur la performance des langages s'appliquent.
+\section{Extension à l'affectation multiple}
+
+\subsection{Question 12}
+
+L'affectation multiple est une généralisation du problème d'affectation simple. L'agent peut recevoir plusieurs objets et chaque objet est en différents exemplaires.
+
+Afin de considérer les changements, on va découper cette question en deux parties. Une première partie qui regardera seulement le côté programmation linéaire, et une seconde partie où l'on regardera l'approche par les graphes.
+
+\subsubsection{Approche par programmation linéaire}
+
+D'abord on va considérer les modifications à faire par rapport au programme $\mathcal{P}_0$. Ces modifications se répercuteront sur les deux autres approches. Ensuite on regardera les modifications à faire pour l'approche égalitariste et l'approche par regret.
+
+\paragraph{Maximiser la moyenne des satisfactions : }
+
+Dans le programme $\mathcal{P}_0$, nous avions deux types de contraintes. Le premier type de contraintes obligeait les agents à ne choisir qu'un objet. Cela correspond au cas où $\forall i \in \{1,..,n\},\ \alpha_i =1$. Ce $1$ se répercutait dans le membre de droite. Donc cela ce généralise très bien en remplaçant le membre de droite par $\alpha_i$. On peut faire la même remarque pour les $\beta_j$ qui correspondent au deuxième type de contraintes. On remarquera qu'on assouplit facilement la contrainte $m=n$. Cela se répercute juste sur le nombre de contraintes du problème. De plus, on remarquera que cette généralisation n'a aucune incidence sur la fonction objectif. La dernière chose à remarquer, est qu'en gardant des variables booléennes, on oblige à ce que chaque agent $i$ choisissent un objet une seule fois. Or, si cet objet existe en plusieurs exemplaires, l'agent $i$ voudra peut-être le prendre plusieurs fois. Il faut alors relâcher le domaine des variables. On obtient donc le programme linéaire $\mathcal{P'}_0$ suivant :
+
+\begin{mdframed}[style=MyFrame]
+
+
+\begin{variables}
+\variable{x_{i,j}}{\mathbb{N}}{1 \leq i,j \leq n}{Vaut $n$ si l'agent $a_i$ reçoit $n$ fois le bien $b_j$}
+\end{variables}
+
+\begin{fonctionobj}
+
+\fobj{\boldmax \ \frac{1}{n}\ \sum_{\substack{1\leq i,j \leq n,m}} u_{i,j}x_{i,j}}
+{avec $u_{i,j}$ les coefficients d'utilité du bien $i$ pour l'agent $j$}
+\end{fonctionobj}
+
+\begin{contraintes}
+   \constraint{\sum_{i=1}^n x_{i,j} \leq \beta_j}{ 1\leq j\leq m}{$\beta_j$ agent par bien}
+   \constraint{\sum_{j=1}^m x_{i,j} \leq \alpha_i}{ 1\leq i\leq n}{$\alpha_i$ bien par agent}
+\end{contraintes}
+
+\end{mdframed}
+\captionof{lstlisting}{Programme linéaire $\mathcal{P'}_0$}
+
+\paragraph{Approche égalitariste : } Dans l'approche égalitariste, les modifications faites précédemment ne changent pas. De plus, la notion de satisfaction ne change pas. Par conséquent le programme $\mathcal{P}_1$ se généralise simplement en appliquant les modifications précédentes.
+
+\paragraph{Approche par regret : } cette approche se généralise très bien à une petite différence prêt. $r_i(x)$ est défini en utilisant $z_i^*$. Seulement la définition de $z_i^*$ s'applique seulement si l'agent choisit un seul objet. Il faut donc donner une nouvelle définition de $z_i^*$. Moralement $z_i^*$ est un majorant de la satisfaction maximale que peut espérer l'agent $i$. Cependant si l'agent $i$ peut recevoir $\alpha_i$ objets, alors $\alpha_i \times \boldmax \{u_{i,j} \mid j\in \{1,..., m\}$ est bien un majorant mais pas une borne supérieure. On peut donc affiner la définition de $z_i^*$ pour obtenir une borne supérieure. 
+
+Soit $\mathcal{U}_i$ le multiensemble des utilités de l'agent $i$ : 
+$$\mathcal{U}_i=(U_i,m)$$ où 
+\begin{itemize}
+\item $U_i=\{u_{i,j} \mid j \in \{1,\dots,m\}$~;
+\item $m(u_{i,j})=\beta_j$~;
+\end{itemize}
+
+Alors on peut définit $z_i^*$ comme :
+$$z_i^*=\sum_{\substack{i \in z_i^{\alpha_i}}} i$$ 
+où $z_i^{n}$ est le multiensemble définit inductivement pour tout $n\in \mathbb{N}$ : 
+\begin{align*}
+z_i^0 &= \emptyset \\
+z_i^{n+1} &= \boldmax \{u_{i,j} \mid u_{i,j} \in \mathcal{U}_i \setminus z_i^{n} \} \cup z_i^{n} 
+\end{align*} 
+
+La définition de $z_i^*$ donne directement un algorithme pour le calculer. Par conséquent, il suffit de reprendre la modélisation $\mathcal{P}_3$ en utilisant la nouvelle définition de $z_i^*$.
+
+\subsubsection{Approche par graphe}
+
+On s'intéresse ici aux algorithmes de graphe pour le problème d'affectation multiple lorsque l'on considère les deux approches précédentes à savoir :
+\begin{itemize}
+\item l'approche égalitariste~;
+\item l'approche par regret~;
+\end{itemize}
+
+Cependant nous n'avons pas trouvé de modélisation approprié pour ces deux approches. En effet, on peut avoir une bonne intuition des capacités sur les arrêtes sortantes de la source ($\alpha_i$) et les arrêtes entrantes de la cible ($\beta_j$) mais sur les capacités du sous-graphe biparti, cela devient plus compliqué. En effet, l'approche par un algorithme glouton du même type qu'à la question $4$ et $10$ demanderait d'avoir une bonne heuristique sur la suppression des arrêtes dans le graphe. En particulier dans le problème de l'affectation simple, on était capable de garantir le fait que l'arrête choisit par l'agent le moins satisfait ne serait pas choisie s'il existait une solution meilleure. Dans le cadre de l'affectation multiple, un agent va pouvoir choisir plusieurs arrêtes. Mais cette fois on ne peut plus garantir que la plus petite arrête choisi par l'agent le moins satisfait ne pourra pas être choisi dans une autre solution. Car une nouvelle  combinaison comprenant cette arrête pourrait améliorer nettement la satisfaction de l'agent.
+
+Une idée \textit{théorique} possible serait d'envisager plusieurs cas. Par exemple, de la même manière qu'on a calculer le regret maximal pour un agent, on pourrait calculer la satisfaction minimal d'un agent. Parmi les $\alpha_i$ arrêtes choisis par l'agent, on sait qu'il y en aura au moins une qui ne sera pas utilisé. Il faut donc envisager tous les cas où on supprime une arête $k\in \alpha_i$. Cela nous amène à parcourir un arbre. En pratique cette méthode ne fonctionnera pas car l'arbre est exponentiel par rapport à la taille du problème. Afin d'avoir un algorithme efficace, cela revient donc à trouver une heuristique afin de choisir quels sont les noeuds intéressant à regarder.
+
+\section{Allocation équitable avec l'opérateur OWA}
+\subsection{Question 13}
+
+Nous avons légèrement modifier $\mathcal{P}_{\mathcal{L}_k}$ afin de transformer la contrainte d'égalité en deux contraintes. On obtient alors le programme linéaire $\mathcal{D}_{\mathcal{L}_k}$ suivant :
+\begin{mdframed}[style=MyFrame]
+
+
+\begin{variables}
+\variable{d_{seuil}^+}{\mathbb{R}^+}{}{}
+\variable{d_{seuil}^-}{\mathbb{R}^+}{}{}
+\variable{d_{i}}{\mathbb{R}^+}{1\leq i \leq n}{}
+\end{variables}
+
+\begin{fonctionobj}
+\fobj{\boldmax \ k(d_{seuil}^+ -d_{seuil}^-) -\sum_{\substack{1\leq i \leq n}} d_i} {}
+\end{fonctionobj}
+
+\begin{contraintes}
+    \constraint{d_{seuil}^+-d_{seuil}^- -d_i \leq z_i(x)}{ 1\leq i\leq n}{}
+\end{contraintes}
+\end{mdframed}
+\captionof{lstlisting}{Programme linéaire $\mathcal{D}_{\mathcal{L}_k}$}
+
+Ce qui est intéressant dans le dual c'est de remarquer que les $z_i(x)$ passent dans les contraintes. Là où dans le primal, $z_i(x)$ devaient obligatoirement être des constantes car c'était le coefficient associé à la variable $y_{i_k}$, alors que maintenant, on peut envisager $z_i(x)$ comme étant une variable.
+
+On peut donc en déduire le programme linéaire suivant $\mathcal{L}_k(x)$ afin de calculer pour $k$ fixé $\mathcal{L}_k(x)$ :
+\begin{mdframed}[style=MyFrame]
+
+
+\begin{variables}
+\variable{d_{seuil}^+}{\mathbb{R}^+}{}{}
+\variable{d_{seuil}^-}{\mathbb{R}^+}{}{}
+\variable{d_{i}}{\mathbb{R}^+}{1\leq i \leq n}{}
+\variable{x_{i,j}}{\mathbb{B}}{1 \leq i,j \leq n}{Vaut $1$ si l'agent $a_i$ reçoit le bien $b_j$}
+\end{variables}
+
+\begin{fonctionobj}
+\fobj{\boldmax \ k(d_{seuil}^+ -d_{seuil}^-) -\sum_{\substack{1\leq i \leq n}} d_i} {$f_{\mathcal{L}_k}$}
+\end{fonctionobj}
+
+\begin{contraintes}
+    \constraint{\sum_{\substack{1\leq j \leq n}} u_{i,j}x_{i,j} +d_i \geq d_{seuil}^+-d_{seuil}^-}{ 1\leq i\leq n}{}
+\end{contraintes}
+\end{mdframed}
+\captionof{lstlisting}{Programme linéaire $\mathcal{L}_k$}
+
+L'intérêt de résoudre ce problème dans le contexte du partage équitable est d'assurer une répartition des satisfactions qui soient \textit{équitables}. C'est à dire qu'il n'y ait pas seulement $n-k$ agents qui soit extrêmement contents même si cela peut-être profitable pour l'intérêt de tous, mais que les $k$ agents soient aussi satisfaits. On pourrait aussi voir ça d'une certaine façon pour contrer le \textit{principe de Pareto}.
+
+\subsection{Question 14}
+
+
+Afin de maximiser l'opérateur $\mathit{OWA}$ nous considérons les $L_k(x)$ comme des \textit{méta-variables} que seul le programme $\mathcal{L}_k$ peut comprendre. Une occurence d'une variable $L_k(x)$ se traduit donc en quelque sort par une occurence du programme $\mathcal{L}_k$. Cela nous amène donc à considérer le programme linéaire $\mathcal{O}\mathcal{W}\mathcal{A}$ suivant :
+\begin{mdframed}[style=MyFrame]
+
+
+\begin{variables}
+\variable{d_{k_{seuil}^+}}{\mathbb{R}^+}{1\leq k \leq n}{}
+\variable{d_{k_{seuil}^-}}{\mathbb{R}^+}{1\leq k \leq n}{}
+\variable{d_{k_i}}{\mathbb{R}^+}{1\leq k,i \leq n}{}
+\variable{x_{i,j}}{\mathbb{B}}{1 \leq i,j \leq n}{Vaut $1$ si l'agent $a_i$ reçoit le bien $b_j$}
+\end{variables}
+
+\begin{fonctionobj}
+\fobj{\boldmax \sum_{k=1}^{n-1}(w_k - w_{k+1})f_{\mathcal{L}_k} + w_n f_{\mathcal{L}_n}}     {$f_{\mathcal{L}_k}$ définit dans $\mathcal{L}_k$}
+%\ k(d_{seuil}^+ -d_{seuil}^-) -\sum_{\substack{1\leq i \leq n}} d_i} {}
+\end{fonctionobj}
+
+\begin{contraintes}
+    \constraint{\sum_{i=1}^n x_{i,j} =1}{ 1\leq j\leq n}{$1$ agent par bien}
+    \constraint{\sum_{j=1}^n x_{i,j} =1}{ 1\leq i\leq n}{$1$ bien par agent}
+    \constraint{z_i(x) +d_{k_i} -(d_{k_{seuil}^+}-d_{k_{seuil}^-})\geq 0}{ 1\leq k,i\leq n}{}
+\end{contraintes}
+\end{mdframed}
+\captionof{lstlisting}{Programme linéaire $\mathcal{L}_k$}
+
+\subsection{Question 15}
+
+\paragraph{Remarque :} dans l'implémentation du modèle, la suite $(w_i)$ est fixe et est définit comme $\forall i \in \{1,...,n\},\ w_i=n-i+1$.
+
+Vous trouverez dans le tableau \ref{question15} les temps moyens pour $n=10,50,100$. Nous faisons tout de même une remarque en remarquant que la disparité des temps pour $n=100$ est assez impressionante. Et ce n'est pas tout. Au minimum le programme prenait 200 secondes, mais pour deux runs, il a prit près de $4000$ secondes. Cela peut peut-être venir de l'ordinateur sur lequel nous avons fait tourné les tests.
+\begin{table}
+\centerline{
+\csvautotabular {csv/question_15/question_15_100.csv}
+}
+\caption{Temps et valeur moyenne pour $M=100$ avec l'opérateur OWA}
+\label{question15}
+\end{table}
+
+\subsection{Question 16}
+Comment on peut le constater sur les tableaux \ref{question16}, la modélisation avec l'opérateur OWA tend à améliorer la moyenne au dépit de l'écart type. On a donc comme pour la première approche une disparité un peu plus grande des satisfactions. Les résultats obtenus étant similaires à ceux de la question $7$, ce qui pourrait être intéressant, serait de faire la comparaison avec le programme $\mathcal{P}_0$.
+\begin{table}
+\centerline{
+\csvautotabular {csv/question_16/question_16_5.csv}
+}
+\caption{comparatif du modèle OWA et maxmin pour n=5  }
+\centerline{
+\csvautotabular {csv/question_16/question_16_10.csv}
+}
+\caption{comparatif du modèle OWA et maxmin pour n=10 }
+\label{question16}
+\end{table}
+
+\subsection{Comparaison du modèle $\mathcal{OWA}$ avec $\mathcal{P}_0$}
+
+Cette fois on remarque que pour l'opérateur $\mathcal{OWA}$, la moyenne est un tout petit peu plus faible afin de favoriser l'écart-type par rapport $\mathcal{P}_0$. C'est pas étonnant que la moyenne soit plus basse pour le modèle $\mathcal{OWA}$, mais ce qui est intéressant de se rendre compte, c'est que cet opérateur favorise à la fois la moyenne et l'écart-type. C'est donc un bon compromis entre les modèles $\mathcal{P}_0$ et $\mathcal{P}_1$. Cependant, le modèle est beaucoup plus lourd à éxécuter.
+\begin{table}
+\centerline{
+\csvautotabular {csv/question_16_bis/question_16_bis_5.csv}
+}
+\caption{comparatif du modèle OWA et maxmin pour n=5  }
+\centerline{
+\csvautotabular {csv/question_16_bis/question_16_bis_10.csv}
+}
+\caption{comparatif du modèle OWA et maxmin pour n=10 }
+
+\label{question16_bis}
+\end{table}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

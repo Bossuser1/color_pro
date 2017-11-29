@@ -429,3 +429,10 @@ img::-moz-selection {
     background-repeat: no-repeat;
     background-position: 100% 100%;
 }
+
+.zoom {
+    width: 100%;
+    -webkit-transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
+    transform-origin: 0 0;
+}

@@ -1,8 +1,0 @@
-(Q1) Si l’on a calculé tous les T (j, `), comment savoir s’il est possible de colorier la ligne l i entière
-avec la séquence entière ?
-
-
-il suffit de verfier si T(m-1,k) est a vrai
-
-http://www-master.ufr-info-p6.jussieu.fr/2005/IMG/pdf/Complexite.pdf .
-page 2/8
